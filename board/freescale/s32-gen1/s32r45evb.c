@@ -9,7 +9,7 @@
 
 #include "s32gen1_gmac_utils.h"
 
-#define S32R_PHY_ADDR_1 0x01
+#define S32R_PHY_ADDR_1 0x06
 
 /**
  * Due to the hardware design of the reset circuit on S32R45,

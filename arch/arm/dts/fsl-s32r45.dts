@@ -126,7 +126,7 @@
 				<&clks S32R45_SCMI_CLK_GMAC1_AXI>;
 		clock-names = "ts", "rx_sgmii", "tx_sgmii",
 						"rx_rgmii", "tx_rgmii", "axi";
-		status = "okay";
+		status = "disabled";
 		reg = <0x0 0x44010000 0x0 0x2000>,
 		      <0x0 0x4007CA00 0x0 0x4>;
 		tx-fifo-depth = <20480>;
@@ -199,18 +199,23 @@
 
 &gmac0 {
 	clocks = <&clks S32GEN1_SCMI_CLK_GMAC0_TS>,
-		 <&clks S32GEN1_SCMI_CLK_GMAC0_RX_SGMII>,
-		 <&clks S32GEN1_SCMI_CLK_GMAC0_TX_SGMII>,
+		 <&clks S32GEN1_SCMI_CLK_GMAC0_RX_MII>,
+		 <&clks S32GEN1_SCMI_CLK_GMAC0_TX_MII>,
 		 <&clks S32GEN1_SCMI_CLK_GMAC0_RX_RGMII>,
 		 <&clks S32GEN1_SCMI_CLK_GMAC0_TX_RGMII>,
+		 <&clks S32GEN1_SCMI_CLK_GMAC0_RX_SGMII>,
+		 <&clks S32GEN1_SCMI_CLK_GMAC0_TX_SGMII>,
 		 <&clks S32GEN1_SCMI_CLK_GMAC0_AXI>;
-	clock-names = "ts", "rx_sgmii", "tx_sgmii",
-		      "rx_rgmii", "tx_rgmii", "axi";
-	pinctrl-0 = <&pinctrl0_gmac0 &pinctrl0_gmac0_mdio>;
-	pinctrl-1 = <&pinctrl0_gmac0_mdio>;
-	pinctrl-names = "gmac_rgmii", "gmac_sgmii";
+	clock-names = "ts", "rx_mii", "tx_mii",
+				"rx_rgmii", "tx_rgmii",
+				"rx_sgmii", "tx_sgmii",
+		      "axi";
+	pinctrl-0 = <&pinctrl0_gmac0_mii &pinctrl0_gmac0_mdio>;
+	pinctrl-1 = <&pinctrl0_gmac0 &pinctrl0_gmac0_mdio>;
+	pinctrl-2 = <&pinctrl0_gmac0_mdio>;
+	pinctrl-names = "gmac_mii", "gmac_rgmii", "gmac_sgmii";
 	status = "okay";
-	phy-mode = "rgmii";
+	phy-mode = "mii";
 	phy-handle = <&gmac0_phy1>;
 };
 
@@ -219,7 +224,7 @@
 	#size-cells = <0>;
 	/* KSZ9031RNXCA on S32R-VNP-PROC */
 	gmac0_phy1: ethernet-phy@1 {
-		reg = <1>;
+		reg = <6>;
 	};
 };
 
@@ -295,6 +300,24 @@
 				    PE11_MSCR_S32R45 PE11_GMAC0_RX_D1_CFG
 				    PE12_MSCR_S32R45 PE12_GMAC0_RX_D2_CFG
 				    PE13_MSCR_S32R45 PE13_GMAC0_RX_D3_CFG
+				    GMAC0_TX_CLK_IMCR PE02_GMAC0_TX_CLK_IN
+				    GMAC0_RX_CLK_IMCR PE08_GMAC0_RX_CLK_IN
+				    GMAC0_RX_DV_IMCR PE09_GMAC0_RX_DV_IN
+				    GMAC0_RX_D0_IMCR PE10_GMAC0_RX_D0_IN
+				    GMAC0_RX_D1_IMCR PE11_GMAC0_RX_D1_IN
+				    GMAC0_RX_D2_IMCR PE12_GMAC0_RX_D2_IN
+				    GMAC0_RX_D3_IMCR PE13_GMAC0_RX_D3_IN
+				    >;
+		};
+
+		pinctrl0_gmac0_mii: pinctrl0_gmac0_mii {
+			fsl,pins = <PE02_MSCR_S32R45 PE02_GMAC0_TX_CLK_CFG
+					PE08_MSCR_S32R45 PE08_GMAC0_RX_CLK_CFG
+					PE03_MSCR_S32R45 PE03_GMAC0_TX_EN_CFG
+				    PE04_MSCR_S32R45 PE04_GMAC0_TX_D0_CFG
+				    PE05_MSCR_S32R45 PE05_GMAC0_TX_D1_CFG
+				    PE06_MSCR_S32R45 PE06_GMAC0_TX_D2_CFG
+				    PE07_MSCR_S32R45 PE07_GMAC0_TX_D3_CFG
 				    GMAC0_TX_CLK_IMCR PE02_GMAC0_TX_CLK_IN
 				    GMAC0_RX_CLK_IMCR PE08_GMAC0_RX_CLK_IN
 				    GMAC0_RX_DV_IMCR PE09_GMAC0_RX_DV_IN

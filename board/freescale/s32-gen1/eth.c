@@ -274,7 +274,7 @@ void setup_iomux_enet_gmac(struct udevice *dev, int intf)
 		break;
 
 	case PHY_INTERFACE_MODE_MII:
-		/* TODO: pinmuxing for MII  */
+		pinctrl_select_state(dev, "gmac_mii");
 		break;
 
 	default:
@@ -315,7 +315,13 @@ static int get_gmac_clocks(u32 mode, const char **rx,
 			*tx = "tx_rgmii";
 		break;
 	case PHY_INTERFACE_MODE_RMII:
+		return -EINVAL;
 	case PHY_INTERFACE_MODE_MII:
+		if (rx)
+			*rx = "rx_mii";
+		if (tx)
+			*tx = "tx_mii";
+		break;
 	default:
 		return -EINVAL;
 	}
@@ -336,8 +342,10 @@ int set_tx_clk_enet_gmac(struct udevice *gmac_dev, u32 speed)
 		return -EINVAL;
 	}
 
-	if (s32gen1_set_dev_clk_rate(tx, gmac_dev, freq) != freq)
+	if (s32gen1_set_dev_clk_rate(tx, gmac_dev, freq) != freq) {
+		dev_err(gmac_dev, "Failed to set gmac_tx clock\n");
 		return -EINVAL;
+	}
 
 	if (s32gen1_enable_dev_clk(tx, gmac_dev)) {
 		dev_err(gmac_dev, "Failed to enable gmac_tx clock\n");
@@ -357,20 +365,22 @@ void setup_clocks_enet_gmac(int intf, struct udevice *gmac_dev)
 	if (ret)
 		return;
 
-	if (set_tx_clk_enet_gmac(gmac_dev, SPEED_1000))
+	if (intf != PHY_INTERFACE_MODE_MII) {
+		if (set_tx_clk_enet_gmac(gmac_dev, SPEED_1000))
 		dev_err(gmac_dev, "Failed to set GMAC TX frequency\n");
 
-	ret = s32gen1_enable_dev_clk(rx, gmac_dev);
-	if (ret)
-		dev_err(gmac_dev, "Failed to enable %s clock\n", rx);
+		ret = s32gen1_enable_dev_clk(rx, gmac_dev);
+		if (ret)
+			dev_err(gmac_dev, "Failed to enable %s clock\n", rx);
 
-	ret = s32gen1_enable_dev_clk(tx, gmac_dev);
-	if (ret)
-		dev_err(gmac_dev, "Failed to enable %s clock\n", tx);
+		ret = s32gen1_enable_dev_clk(tx, gmac_dev);
+		if (ret)
+			dev_err(gmac_dev, "Failed to enable %s clock\n", tx);
 
-	ret = s32gen1_enable_dev_clk(ts, gmac_dev);
-	if (ret)
-		dev_err(gmac_dev, "Failed to enable %s clock\n", ts);
+		ret = s32gen1_enable_dev_clk(ts, gmac_dev);
+		if (ret)
+			dev_err(gmac_dev, "Failed to enable %s clock\n", ts);
+	}	
 }
 
 #endif /* CONFIG_DWC_ETH_QOS_S32CC */
