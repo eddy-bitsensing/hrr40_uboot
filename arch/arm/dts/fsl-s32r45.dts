@@ -132,10 +132,9 @@
 		tx-fifo-depth = <20480>;
 		rx-fifo-depth = <20480>;
 		phy-mode = "sgmii";
-		fixed-link {
-			speed = <1000>;
-			full-duplex;
-		};
+		gmac1_mdio: mdio1 {
+			compatible = "snps,dwmac-mdio";
+		};		
 	};
 
 	pcie1: pcie@44100000 {
@@ -225,6 +224,23 @@
 	/* KSZ9031RNXCA on S32R-VNP-PROC */
 	gmac0_phy1: ethernet-phy@1 {
 		reg = <6>;
+	};
+};
+
+&gmac1 {
+	pinctrl-0 = <&pinctrl0_gmac1 &pinctrl1_gmac1 &pinctrl1_gmac1_mdio>;
+	pinctrl-names = "gmac_sgmii";
+	status = "okay";
+	phy-mode = "sgmii";
+	phy-handle = <&gmac1_phy1>;
+};
+
+&gmac1_mdio {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	/* DP83867 */
+	gmac1_phy1: ethernet-phy@2 {
+		reg = <0>;
 	};
 };
 
@@ -327,6 +343,12 @@
 				    GMAC0_RX_D3_IMCR PE13_GMAC0_RX_D3_IN
 				    >;
 		};
+
+		pinctrl0_gmac1: pinctrl0_gmac1 {
+			fsl,pins = <PF01_MSCR_S32R45 PF01_GMAC1_TS_CLK_CFG
+					GMAC1_TS_CLK_IMCR PF01_GMAC1_TS_CLK_IN
+				    >;
+		};		
 
 		pinctrl0_i2c0: pinctrl0_i2c0 {
 			fsl,pins = <PB00_MSCR_S32R45 PB00_I2C0_SDA_CFG
@@ -453,6 +475,18 @@
 		pinctrl1_i2c1_gpio: pinctrl1_i2c1_gpio {
 			fsl,pins = <I2C1_SCL_IMCR IMCR_DISABLED
 				    I2C1_SDA_IMCR IMCR_DISABLED
+				    >;
+		};
+		
+		pinctrl1_gmac1_mdio: pinctrl1_gmac1_mdio {
+			fsl,pins = <PH06_MSCR_S32R45 PH06_GMAC1_MDC_CFG
+					PH07_MSCR_S32R45 PH07_GMAC1_MDIO_CFG
+					GMAC1_MDIO_IMCR PH07_GMAC1_MDIO_IN
+				    >;
+		};
+
+		pinctrl1_gmac1: pinctrl1_gmac1 {
+			fsl,pins = <PH13_MSCR_S32R45 PH13_GMAC1_TX_CLK_OUT
 				    >;
 		};
 	};

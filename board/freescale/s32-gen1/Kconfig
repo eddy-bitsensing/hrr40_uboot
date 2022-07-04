@@ -73,7 +73,7 @@ config S32GEN1_HWCONFIG
 	default "pcie0:mode=rc,clock=ext;pcie1:mode=sgmii,clock=ext,fmhz=125,xpcs_mode=0" if (PCIE_S32GEN1 && FSL_PFENG) &&  (TARGET_S32G2XXAEVB || TARGET_S32G3XXAEVB)
 	default "pcie0:mode=ep,clock=ext;pcie1:mode=sgmii,clock=ext,fmhz=125,xpcs_mode=0" if (PCIE_S32GEN1 && FSL_PFENG) &&  TARGET_S32G274ABLUEBOX3
 	default "pcie0:mode=sgmii;pcie1:mode=sgmii" if (!PCIE_S32GEN1 && FSL_PFENG)
-	default "pcie0:mode=rc,clock=ext;pcie1:mode=ep,clock=int" if (PCIE_S32GEN1 && !FSL_PFENG)
+	default "pcie0:mode=rc,clock=int;pcie1:mode=sgmii,clock=int,xpcs_mode=0,fmhz=125" if (PCIE_S32GEN1 && !FSL_PFENG)
 	default ""
 	help
 	  The configuration for the PCIe controllers, stored in
