@@ -120,6 +120,9 @@
 #define GMAC0_RX_D3_IMCR	(534)
 #define GMAC0_TX_CLK_IMCR	(538)
 
+#define GMAC1_MDIO_IMCR		(659)
+#define GMAC1_TS_CLK_IMCR	(539)
+
 #define QSPI_DATA0_A_IMCR	(540)
 #define QSPI_DATA1_A_IMCR	(541)
 #define QSPI_DATA2_A_IMCR	(542)
